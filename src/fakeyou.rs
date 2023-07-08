@@ -4,15 +4,12 @@ use ureq::{Agent, AgentBuilder};
 use crate::FAKEYOU_API_URL;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Default)]
 pub struct Auth {
     pub api_key: Option<String>,
 }
 
-impl Default for Auth {
-    fn default() -> Self {
-        Self { api_key: None }
-    }
-}
+
 
 impl Auth {
     pub fn new(api_key: &str) -> Auth {
