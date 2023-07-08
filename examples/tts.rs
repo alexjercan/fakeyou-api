@@ -26,7 +26,9 @@ fn main() {
 
     loop {
         // Call the TTS API
-        let job_result = fakeyou.tts_job(&inference_result.inference_job_token).unwrap();
+        let job_result = fakeyou
+            .tts_job(&inference_result.inference_job_token)
+            .unwrap();
 
         // Check if the job is done
         match job_result.state.status {
@@ -41,7 +43,9 @@ fn main() {
             }
             TtsJobStatus::CompleteSuccess => {
                 println!("Job completed successfully");
-                let output_result = fakeyou.tts_output(&job_result.state.maybe_public_bucket_wav_audio_path.unwrap()).unwrap();
+                let output_result = fakeyou
+                    .tts_output(&job_result.state.maybe_public_bucket_wav_audio_path.unwrap())
+                    .unwrap();
 
                 // Do what you need with the audio file
                 std::fs::write("output.wav", output_result.bytes).unwrap();
