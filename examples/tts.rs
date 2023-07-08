@@ -9,11 +9,8 @@ fn main() {
     let fakeyou = FakeYou::new(auth, FAKEYOU_API_URL);
 
     // Create the TTS body
-    let inference_body = InferenceBody {
-        tts_model_token: "TM:ebgxj0j4fvzp".to_string(),
-        inference_text: "Hello, World! What should we do today?".to_string(),
-        uuid_idempotency_token: None,
-    };
+    let inference_body =
+        InferenceBody::new("TM:ebgxj0j4fvzp", "Hello, World! What should we do today?");
 
     // Call the TTS API
     // This uses the util module of this crate and will block the thread until the task is done
