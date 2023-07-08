@@ -33,6 +33,16 @@ pub struct InferenceBody {
     pub uuid_idempotency_token: Option<String>,
 }
 
+impl InferenceBody {
+    pub fn new(tts_model_token: &str, inference_text: &str) -> Self {
+        Self {
+            tts_model_token: tts_model_token.to_string(),
+            inference_text: inference_text.to_string(),
+            uuid_idempotency_token: None,
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TtsInferenceResult {
     /// Whether the request was successful.
@@ -155,25 +165,5 @@ impl TtsApi for FakeYou {
             .read_to_end(&mut bytes)
             .map_err(|e| Error::RequestError(e.to_string()))?;
         Ok(TtsOutputResult { bytes })
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use crate::tts::*;
-    use crate::*;
-
-    #[test]
-    fn test_tts() {
-        let fakeyou = FakeYou::default();
-
-        let tts_body = InferenceBody {
-            tts_model_token: "TM:7wbtjphx8h8v".to_string(),
-            inference_text: "Hello world".to_string(),
-            uuid_idempotency_token: None,
-        };
-
-        let tts_result = fakeyou.tts_inference(&tts_body);
-        assert!(tts_result.is_ok());
     }
 }
