@@ -59,11 +59,7 @@
 //! ```no_run
 //! # fn main() {
 //! // Import the dependencies
-//! // Import the dependencies
-//! use fakeyou_api::{
-//!     tts::{InferenceBody, TtsApi, TtsJobStatus},
-//!     *,
-//! };
+//! use fakeyou_api::{tts::InferenceBody, util::tts::TtsApiSync, *};
 //!
 //! // You can create a default client without any api key.
 //! // You can also load the API key from environment FAKEYOU_API_KEY.
@@ -79,45 +75,11 @@
 //! };
 //!
 //! // Call the TTS API
-//! let inference_result = fakeyou.tts_inference(&inference_body).unwrap();
+//! // This uses the util module of this crate and will block the thread until the task is done
+//! let output_result = fakeyou.create_tts_task(&inference_body).unwrap();
 //!
-//! // Print the result
-//! println!("{:?}", inference_result);
-//!
-//! loop {
-//!     // Call the TTS API
-//!     let job_result = fakeyou.tts_job(&inference_result.inference_job_token).unwrap();
-//!
-//!     // Check if the job is done
-//!     match job_result.state.status {
-//!         TtsJobStatus::Pending => {
-//!             println!("Job is pending");
-//!         }
-//!         TtsJobStatus::Started => {
-//!             println!("Job is started");
-//!         }
-//!         TtsJobStatus::AttemptFailed => {
-//!             println!("Job attempt failed. Trying again...");
-//!         }
-//!         TtsJobStatus::CompleteSuccess => {
-//!             println!("Job completed successfully");
-//!             let output_result = fakeyou.tts_output(&job_result.state.maybe_public_bucket_wav_audio_path.unwrap()).unwrap();
-//!
-//!             // Do what you need with the audio file
-//!             std::fs::write("output.wav", output_result.bytes).unwrap();
-//!
-//!             break;
-//!         }
-//!         _ => {
-//!             println!("Job failed");
-//!
-//!             break;
-//!         }
-//!     }
-//!
-//!     // Wait 1 second before trying again
-//!     std::thread::sleep(std::time::Duration::from_secs(1));
-//! }
+//! // Do what you need with the audio file
+//! std::fs::write("output.wav", output_result.bytes).unwrap();
 //! # }
 //! ```
 //!
