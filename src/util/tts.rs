@@ -36,10 +36,7 @@ impl TtsApiSync for FakeYou {
             };
 
             match status {
-                None => {
-                    std::thread::sleep(std::time::Duration::from_millis(100));
-                    continue;
-                }
+                None => std::thread::sleep(std::time::Duration::from_secs(2)),
                 Some(result) => return result,
             }
         }
