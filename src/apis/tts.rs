@@ -3,7 +3,7 @@
 
 //! TTS API
 
-use crate::{ApiResult, Error, FakeYou};
+use crate::{ApiResult, FakeYou};
 use serde::{Deserialize, Serialize};
 
 use super::{STORAGE_URL, TTS_INFERENCE, TTS_JOB};
@@ -124,23 +124,24 @@ impl TtsApi for FakeYou {
 
         let url = format!("{}/{}", &self.api_url, TTS_INFERENCE);
 
-        self.agent
+        self.client
             .post(url.as_str())
-            .set("Accept", "application/json")
-            .set("Content-Type", "application/json")
-            .send_json(voice_settings)?
-            .into_json::<TtsInferenceResult>()
+            .header("Accept", "application/json")
+            .header("Content-Type", "application/json")
+            .json(&voice_settings)
+            .send()?
+            .json::<TtsInferenceResult>()
             .map_err(|e| e.into())
     }
 
     fn tts_job(&self, job_id: &str) -> ApiResult<TtsJobResult> {
         let url = format!("{}/{}/{}", &self.api_url, TTS_JOB, job_id);
 
-        self.agent
+        self.client
             .get(url.as_str())
-            .set("Accept", "application/json")
-            .call()?
-            .into_json::<TtsJobResult>()
+            .header("Accept", "application/json")
+            .send()?
+            .json::<TtsJobResult>()
             .map_err(|e| e.into())
     }
 
@@ -148,22 +149,12 @@ impl TtsApi for FakeYou {
         let url = format!("{}{}", STORAGE_URL, public_bucket_wav_audio_path);
 
         let response = self
-            .agent
+            .client
             .get(url.as_str())
-            .set("Accept", "audio/wav")
-            .call()?;
+            .header("Accept", "audio/wav")
+            .send()?;
 
-        let len = response
-            .header("Content-Length")
-            .ok_or_else(|| Error::RequestError("Content-Length header not found".to_string()))?
-            .parse::<usize>()
-            .map_err(|e| Error::RequestError(e.to_string()))?;
-
-        let mut bytes = Vec::with_capacity(len);
-        response
-            .into_reader()
-            .read_to_end(&mut bytes)
-            .map_err(|e| Error::RequestError(e.to_string()))?;
+        let bytes = response.bytes()?.to_vec();
         Ok(TtsOutputResult { bytes })
     }
 }

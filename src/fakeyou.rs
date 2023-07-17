@@ -1,7 +1,6 @@
-use serde::{Deserialize, Serialize};
-use ureq::{Agent, AgentBuilder};
-
 use crate::FAKEYOU_API_URL;
+use reqwest::blocking::Client;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, Default)]
 pub struct Auth {
@@ -28,7 +27,7 @@ impl Auth {
 pub struct FakeYou {
     pub auth: Auth,
     pub api_url: String,
-    pub(crate) agent: Agent,
+    pub(crate) client: Client,
 }
 
 impl Default for FakeYou {
@@ -42,7 +41,7 @@ impl FakeYou {
         FakeYou {
             auth,
             api_url: api_url.to_string(),
-            agent: AgentBuilder::new().build(),
+            client: Client::new(),
         }
     }
 }
