@@ -3,7 +3,8 @@
 
 //! TTS API
 
-use crate::{ApiResult, FakeYou};
+use crate::{ApiResult, Error, FakeYou};
+use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
 use super::{STORAGE_URL, TTS_INFERENCE, TTS_JOB};
@@ -124,25 +125,43 @@ impl TtsApi for FakeYou {
 
         let url = format!("{}/{}", &self.api_url, TTS_INFERENCE);
 
-        self.client
+        let response = self
+            .client
             .post(url.as_str())
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
             .json(&voice_settings)
-            .send()?
-            .json::<TtsInferenceResult>()
-            .map_err(|e| e.into())
+            .send()
+            .map_err(|e| Error::RequestFailed(e.to_string()))?;
+
+        match response.status() {
+            StatusCode::OK => response
+                .json::<TtsInferenceResult>()
+                .map_err(|e| Error::ParseError(e.to_string())),
+            StatusCode::BAD_REQUEST => Err(Error::BadRequest),
+            StatusCode::UNAUTHORIZED => Err(Error::Unauthorized),
+            StatusCode::TOO_MANY_REQUESTS => Err(Error::TooManyRequests),
+            StatusCode::INTERNAL_SERVER_ERROR => Err(Error::InternalServerError),
+            code => Err(Error::Unknown(code.as_u16())),
+        }
     }
 
     fn tts_job(&self, job_id: &str) -> ApiResult<TtsJobResult> {
         let url = format!("{}/{}/{}", &self.api_url, TTS_JOB, job_id);
 
-        self.client
+        let response = self
+            .client
             .get(url.as_str())
             .header("Accept", "application/json")
-            .send()?
-            .json::<TtsJobResult>()
-            .map_err(|e| e.into())
+            .send()
+            .map_err(|e| Error::RequestFailed(e.to_string()))?;
+
+        match response.status() {
+            StatusCode::OK => response
+                .json::<TtsJobResult>()
+                .map_err(|e| Error::ParseError(e.to_string())),
+            code => Err(Error::Unknown(code.as_u16())),
+        }
     }
 
     fn tts_output(&self, public_bucket_wav_audio_path: &str) -> ApiResult<TtsOutputResult> {
@@ -152,9 +171,14 @@ impl TtsApi for FakeYou {
             .client
             .get(url.as_str())
             .header("Accept", "audio/wav")
-            .send()?;
+            .send()
+            .map_err(|e| Error::RequestFailed(e.to_string()))?;
 
-        let bytes = response.bytes()?.to_vec();
+        let bytes = response
+            .bytes()
+            .map_err(|e| Error::ParseError(e.to_string()))?
+            .to_vec();
+
         Ok(TtsOutputResult { bytes })
     }
 }

@@ -25,7 +25,7 @@ impl TtsApiSync for FakeYou {
                             }
                         }
                     }
-                    _ => Some(Err(Error::RequestError(
+                    _ => Some(Err(Error::JobFailed(
                         job_result
                             .state
                             .maybe_extra_status_description
