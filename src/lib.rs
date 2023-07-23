@@ -38,7 +38,7 @@
 //! |---|---|
 //! |Text to Speech|✔️|
 //! |Voices|✔️|
-//! |Categories|❌|
+//! |Categories|✔️|
 //!
 //! ## Usage
 //!
