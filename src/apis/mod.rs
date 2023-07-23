@@ -1,6 +1,6 @@
+pub mod category;
 pub mod tts;
 pub mod voice;
-pub mod category;
 
 pub const FAKEYOU_API_URL: &str = "https://api.fakeyou.com";
 
