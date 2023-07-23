@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added voices enpoint api
+- Added categories endpoint api
 
 ## [0.2.1]
 
