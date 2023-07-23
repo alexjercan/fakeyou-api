@@ -1,6 +1,6 @@
 [package]
 name = "fakeyou-api"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["jercan_alex27@yahoo.com"]
 edition = "2021"
 license = "MIT"
