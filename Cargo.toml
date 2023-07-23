@@ -21,3 +21,7 @@ uuid = { version = "1.4.0", features = ["v4"] }
 [[example]]
 name = "tts"
 path = "examples/tts.rs"
+
+[[example]]
+name = "voices"
+path = "examples/voices.rs"

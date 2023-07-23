@@ -37,7 +37,7 @@
 //! |API|Support|
 //! |---|---|
 //! |Text to Speech|✔️|
-//! |Voices|❌|
+//! |Voices|✔️|
 //! |Categories|❌|
 //!
 //! ## Usage

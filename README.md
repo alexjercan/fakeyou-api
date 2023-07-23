@@ -37,7 +37,7 @@ Check the [official](https://docs.fakeyou.com/) API reference.
 |API|Support|
 |---|---|
 |Text to Speech|✔️|
-|Voices|❌|
+|Voices|✔️|
 |Categories|❌|
 
 ### Usage
