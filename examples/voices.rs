@@ -1,5 +1,5 @@
 // Import the dependencies
-use fakeyou_api::{voices::*, *};
+use fakeyou_api::{voice::*, *};
 
 fn main() {
     // You can create a default client without any api key.
@@ -8,9 +8,8 @@ fn main() {
     let auth = Auth::default();
     let fakeyou = FakeYou::new(auth, FAKEYOU_API_URL);
 
-    // Call the TTS API
-    // This uses the util module of this crate and will block the thread until the task is done
-    let voices_result = fakeyou.tts_list().unwrap();
+    // Call the Voices API
+    let voices_result = fakeyou.tts_voices().unwrap();
 
     // Do what you need with the result
     println!("{:#?}", voices_result);

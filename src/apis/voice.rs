@@ -7,7 +7,7 @@ use crate::{ApiResult, Error, FakeYou};
 use reqwest::StatusCode;
 use serde::{Deserialize, Serialize};
 
-use super::TTS_LIST;
+use super::TTS_VOICES;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TtsListResult {
@@ -52,12 +52,12 @@ pub struct TtsModel {
 }
 
 pub trait VoicesApi {
-    fn tts_list(&self) -> ApiResult<TtsListResult>;
+    fn tts_voices(&self) -> ApiResult<TtsListResult>;
 }
 
 impl VoicesApi for FakeYou {
-    fn tts_list(&self) -> ApiResult<TtsListResult> {
-        let url = format!("{}/{}", &self.api_url, TTS_LIST);
+    fn tts_voices(&self) -> ApiResult<TtsListResult> {
+        let url = format!("{}/{}", &self.api_url, TTS_VOICES);
 
         let response = self
             .client
